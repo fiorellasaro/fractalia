@@ -6,6 +6,7 @@ import FractalInfoModal from "./components/FractalInfoModal";
 import DrawingPad from "./components/DrawingPad";
 import MaterialPanel from "./components/MaterialPanel";
 import SpiroFractal from "./components/SpiroFractal";
+import { Settings, Sliders } from "lucide-react";
 import type {
   GeometryType,
   FractalRuleConfig,
@@ -15,7 +16,7 @@ import type {
 function App() {
   const [depth, setDepth] = useState(1);
   const [size, setSize] = useState(2);
-  const [color, setColor] = useState("#3b82f6");
+  const [color, setColor] = useState("#22c55e");
   const [metalness, setMetalness] = useState(0.5);
   const [roughness, setRoughness] = useState(0.3);
   const [rotationSpeed, setRotationSpeed] = useState(1.0);
@@ -50,6 +51,12 @@ function App() {
   const [radialRepeats, setRadialRepeats] = useState(1);
   const [radialRepeatRotation, setRadialRepeatRotation] = useState(15);
   const [radialRepeatScale, setRadialRepeatScale] = useState(1.0);
+  const [radialValid, setRadialValid] = useState(true);
+  const [radialColor, setRadialColor] = useState("#22c55e");
+  const [radialLineWidth, setRadialLineWidth] = useState(1.5);
+
+  const [showControlsPanel, setShowControlsPanel] = useState(false);
+  const [showMaterialPanel, setShowMaterialPanel] = useState(false);
 
   const clamp = (v: number, min: number, max: number) =>
     Math.min(max, Math.max(min, v));
@@ -94,10 +101,10 @@ function App() {
         customPoints={customPoints}
         radialRender={
           <SpiroFractal
-            show={showRadial}
+            show={showRadial && radialValid}
             type={radialType}
-            color={color}
-            lineWidth={1.5}
+            color={radialColor}
+            lineWidth={radialLineWidth}
             segments={radialSegments}
             a={radialA}
             k={radialK}
@@ -110,56 +117,160 @@ function App() {
           />
         }
       />
-      <ControlPanel
-        depth={depth}
-        setDepth={setDepth}
-        geometryType={geometryType}
-        setGeometryType={setGeometryType}
-        arrangementType={arrangementType}
-        setArrangementType={setArrangementType}
-        ruleConfig={ruleConfig}
-        setRuleConfig={setRuleConfig}
-        scaleFactor={scaleFactor}
-        setScaleFactor={setScaleFactorSafe}
-        onOpenInfo={() => setIsInfoOpen(true)}
-        onOpenDrawing={() => setIsDrawingOpen(true)}
-        showRadial={showRadial}
-        setShowRadial={setShowRadial}
-        radialType={radialType}
-        setRadialType={setRadialType}
-        radialSegments={radialSegments}
-        setRadialSegments={setRadialSegmentsSafe}
-        radialA={radialA}
-        setRadialA={setRadialASafe}
-        radialK={radialK}
-        setRadialK={setRadialKSafe}
-        radialR={radialR}
-        setRadialR={setRadialRSafe}
-        radialr={radialr}
-        setRadialr={setRadialrSafe}
-        radialD={radialD}
-        setRadialD={setRadialDSafe}
-        radialRepeats={radialRepeats}
-        setRadialRepeats={setRadialRepeatsSafe}
-        radialRepeatRotation={radialRepeatRotation}
-        setRadialRepeatRotation={setRadialRepeatRotationSafe}
-        radialRepeatScale={radialRepeatScale}
-        setRadialRepeatScale={setRadialRepeatScaleSafe}
-      />
-      <MaterialPanel
-        size={size}
-        setSize={setSize}
-        rotationSpeed={rotationSpeed}
-        setRotationSpeed={setRotationSpeed}
-        metalness={metalness}
-        setMetalness={setMetalness}
-        roughness={roughness}
-        setRoughness={setRoughness}
-        isWireframe={isWireframe}
-        setIsWireframe={setIsWireframe}
-        color={color}
-        setColor={setColor}
-      />
+      <div className="hidden sm:block">
+        <ControlPanel
+          depth={depth}
+          setDepth={setDepth}
+          geometryType={geometryType}
+          setGeometryType={setGeometryType}
+          arrangementType={arrangementType}
+          setArrangementType={setArrangementType}
+          ruleConfig={ruleConfig}
+          setRuleConfig={setRuleConfig}
+          scaleFactor={scaleFactor}
+          setScaleFactor={setScaleFactorSafe}
+          onOpenInfo={() => setIsInfoOpen(true)}
+          onOpenDrawing={() => setIsDrawingOpen(true)}
+          showRadial={showRadial}
+          setShowRadial={setShowRadial}
+          radialType={radialType}
+          setRadialType={setRadialType}
+          radialSegments={radialSegments}
+          setRadialSegments={setRadialSegmentsSafe}
+          setRadialValid={setRadialValid}
+          radialA={radialA}
+          setRadialA={setRadialASafe}
+          radialK={radialK}
+          setRadialK={setRadialKSafe}
+          radialR={radialR}
+          setRadialR={setRadialRSafe}
+          radialr={radialr}
+          setRadialr={setRadialrSafe}
+          radialD={radialD}
+          setRadialD={setRadialDSafe}
+          radialRepeats={radialRepeats}
+          setRadialRepeats={setRadialRepeatsSafe}
+          radialRepeatRotation={radialRepeatRotation}
+          setRadialRepeatRotation={setRadialRepeatRotationSafe}
+          radialRepeatScale={radialRepeatScale}
+          setRadialRepeatScale={setRadialRepeatScaleSafe}
+        />
+      </div>
+      {showControlsPanel && (
+        <div className="sm:hidden">
+          <ControlPanel
+            depth={depth}
+            setDepth={setDepth}
+            geometryType={geometryType}
+            setGeometryType={setGeometryType}
+            arrangementType={arrangementType}
+            setArrangementType={setArrangementType}
+            ruleConfig={ruleConfig}
+            setRuleConfig={setRuleConfig}
+            scaleFactor={scaleFactor}
+            setScaleFactor={setScaleFactorSafe}
+            onOpenInfo={() => setIsInfoOpen(true)}
+            onOpenDrawing={() => setIsDrawingOpen(true)}
+            showRadial={showRadial}
+            setShowRadial={setShowRadial}
+            radialType={radialType}
+            setRadialType={setRadialType}
+            radialSegments={radialSegments}
+            setRadialSegments={setRadialSegmentsSafe}
+            radialA={radialA}
+            setRadialA={setRadialASafe}
+            radialK={radialK}
+            setRadialK={setRadialKSafe}
+            radialR={radialR}
+            setRadialR={setRadialRSafe}
+            radialr={radialr}
+            setRadialr={setRadialrSafe}
+            radialD={radialD}
+            setRadialD={setRadialDSafe}
+            radialRepeats={radialRepeats}
+            setRadialRepeats={setRadialRepeatsSafe}
+            radialRepeatRotation={radialRepeatRotation}
+            setRadialRepeatRotation={setRadialRepeatRotationSafe}
+            radialRepeatScale={radialRepeatScale}
+            setRadialRepeatScale={setRadialRepeatScaleSafe}
+            setRadialValid={setRadialValid}
+          />
+        </div>
+      )}
+      <div className="hidden sm:block">
+        <MaterialPanel
+          size={size}
+          setSize={setSize}
+          rotationSpeed={rotationSpeed}
+          setRotationSpeed={setRotationSpeed}
+          metalness={metalness}
+          setMetalness={setMetalness}
+          roughness={roughness}
+          setRoughness={setRoughness}
+          isWireframe={isWireframe}
+          setIsWireframe={setIsWireframe}
+          color={color}
+          setColor={setColor}
+          radialColor={radialColor}
+          setRadialColor={setRadialColor}
+          radialLineWidth={radialLineWidth}
+          setRadialLineWidth={setRadialLineWidth}
+        />
+      </div>
+      {showMaterialPanel && (
+        <div className="sm:hidden">
+          <MaterialPanel
+            size={size}
+            setSize={setSize}
+            rotationSpeed={rotationSpeed}
+            setRotationSpeed={setRotationSpeed}
+            metalness={metalness}
+            setMetalness={setMetalness}
+            roughness={roughness}
+            setRoughness={setRoughness}
+            isWireframe={isWireframe}
+            setIsWireframe={setIsWireframe}
+            color={color}
+            setColor={setColor}
+            radialColor={radialColor}
+            setRadialColor={setRadialColor}
+            radialLineWidth={radialLineWidth}
+            setRadialLineWidth={setRadialLineWidth}
+          />
+        </div>
+      )}
+      <div className="fixed top-4 left-4 sm:hidden z-30 flex gap-2">
+        <button
+          onClick={() => {
+            setShowControlsPanel((v) => !v);
+            setShowMaterialPanel(false);
+          }}
+          className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-colors ${
+            showControlsPanel
+              ? "bg-green-500/20 border-green-500 text-green-300"
+              : "bg-gray-800 border-white/10 text-white"
+          }`}
+        >
+          <Settings className="w-4 h-4" />
+          <span className="text-xs">Fractal Settings</span>
+        </button>
+      </div>
+      <div className="fixed top-4 right-4 sm:hidden z-30 flex gap-2">
+        <button
+          onClick={() => {
+            setShowMaterialPanel((v) => !v);
+            setShowControlsPanel(false);
+          }}
+          className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-colors ${
+            showMaterialPanel
+              ? "bg-green-500/20 border-green-500 text-green-300"
+              : "bg-gray-800 border-white/10 text-white"
+          }`}
+        >
+          <Sliders className="w-4 h-4" />
+          <span className="text-xs">3D Settings</span>
+        </button>
+      </div>
       <FractalInfoModal
         isOpen={isInfoOpen}
         onClose={() => setIsInfoOpen(false)}

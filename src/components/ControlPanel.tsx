@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Settings,
   Info,
@@ -31,6 +31,7 @@ interface ControlPanelProps {
   // Radial section
   showRadial: boolean;
   setShowRadial: (v: boolean) => void;
+  setRadialValid?: (v: boolean) => void;
   radialType: "rose" | "hypotrochoid" | "epitrochoid";
   setRadialType: (v: "rose" | "hypotrochoid" | "epitrochoid") => void;
   radialSegments: number;
@@ -68,6 +69,7 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
   onOpenDrawing,
   showRadial,
   setShowRadial,
+  setRadialValid,
   radialType,
   setRadialType,
   radialSegments,
@@ -127,8 +129,23 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
     return isNaN(n) ? fallback : n;
   };
 
+  const [segmentsInput, setSegmentsInput] = useState(String(radialSegments));
+  const [aInput, setAInput] = useState(String(radialA));
+  const [kInput, setKInput] = useState(String(radialK));
+  const [RInput, setRInput] = useState(String(radialR));
+  const [rInput, setRsmallInput] = useState(String(radialr));
+  const [dInput, setDInput] = useState(String(radialD));
+  const [repeatsInput, setRepeatsInput] = useState(String(radialRepeats));
+  const [rotInput, setRotInput] = useState(String(radialRepeatRotation));
+  const [scaleInput, setScaleInput] = useState(String(radialRepeatScale));
+
+  const desiredRadialRef = useRef(showRadial);
+  useEffect(() => {
+    desiredRadialRef.current = showRadial;
+  }, [showRadial]);
+
   return (
-    <div className="absolute top-4 left-4 bg-gray-900/80 backdrop-blur-md p-4 rounded-xl border border-white/10 text-white w-96 shadow-2xl z-10">
+    <div className="fixed inset-x-4 top-16 bottom-4 bg-gray-900/80 backdrop-blur-md p-4 rounded-xl border border-white/10 text-white w-auto shadow-2xl z-20 overflow-y-auto sm:absolute sm:inset-auto sm:top-4 sm:left-4 sm:bottom-auto sm:w-96 sm:overflow-visible sm:z-10">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-2">
           <Settings className="w-5 h-5 text-green-400" />
@@ -255,11 +272,18 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
                     type="number"
                     min={64}
                     max={4096}
-                    value={radialSegments}
+                    value={segmentsInput}
                     onChange={(e) => {
-                      const n = parseInt(e.target.value);
+                      const sv = e.target.value;
+                      setSegmentsInput(sv);
+                      if (sv.trim() === "") {
+                        setRadialValid?.(false);
+                        return;
+                      }
+                      const n = parseInt(sv);
                       const v = isNaN(n) ? radialSegments : n;
                       setRadialSegments(clamp(v, 64, 4096));
+                      setRadialValid?.(true);
                     }}
                     className="w-full bg-gray-800 text-white text-sm rounded-lg border border-gray-700 p-2 focus:border-green-500"
                   />
@@ -275,12 +299,18 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
                     <input
                       type="number"
                       step="0.1"
-                      value={radialA}
-                      onChange={(e) =>
-                        setRadialA(
-                          clamp(toNumber(e.target.value, radialA), 0.1, 10),
-                        )
-                      }
+                      value={aInput}
+                      onChange={(e) => {
+                        const sv = e.target.value;
+                        setAInput(sv);
+                        if (sv.trim() === "") {
+                          setRadialValid?.(false);
+                          return;
+                        }
+                        const v = clamp(toNumber(sv, radialA), 0.1, 10);
+                        setRadialA(v);
+                        setRadialValid?.(true);
+                      }}
                       className="w-full bg-gray-800 text-white text-sm rounded-lg border border-gray-700 p-2 focus:border-green-500"
                     />
                   </div>
@@ -290,11 +320,18 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
                       type="number"
                       min={1}
                       max={24}
-                      value={radialK}
+                      value={kInput}
                       onChange={(e) => {
-                        const n = parseInt(e.target.value);
+                        const sv = e.target.value;
+                        setKInput(sv);
+                        if (sv.trim() === "") {
+                          setRadialValid?.(false);
+                          return;
+                        }
+                        const n = parseInt(sv);
                         const v = isNaN(n) ? radialK : n;
                         setRadialK(clamp(v, 1, 24));
+                        setRadialValid?.(true);
                       }}
                       className="w-full bg-gray-800 text-white text-sm rounded-lg border border-gray-700 p-2 focus:border-green-500"
                     />
@@ -309,12 +346,18 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
                     <input
                       type="number"
                       step="0.1"
-                      value={radialR}
-                      onChange={(e) =>
-                        setRadialR(
-                          clamp(toNumber(e.target.value, radialR), 0.1, 10),
-                        )
-                      }
+                      value={RInput}
+                      onChange={(e) => {
+                        const sv = e.target.value;
+                        setRInput(sv);
+                        if (sv.trim() === "") {
+                          setRadialValid?.(false);
+                          return;
+                        }
+                        const v = clamp(toNumber(sv, radialR), 0.1, 10);
+                        setRadialR(v);
+                        setRadialValid?.(true);
+                      }}
                       className="w-full bg-gray-800 text-white text-sm rounded-lg border border-gray-700 p-2 focus:border-green-500"
                     />
                   </div>
@@ -323,16 +366,22 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
                     <input
                       type="number"
                       step="0.1"
-                      value={radialr}
-                      onChange={(e) =>
-                        setRadialr(
-                          clamp(
-                            toNumber(e.target.value, radialr),
-                            0.1,
-                            Math.max(0.2, Math.min(10, radialR - 0.1)),
-                          ),
-                        )
-                      }
+                      value={rInput}
+                      onChange={(e) => {
+                        const sv = e.target.value;
+                        setRsmallInput(sv);
+                        if (sv.trim() === "") {
+                          setRadialValid?.(false);
+                          return;
+                        }
+                        const v = clamp(
+                          toNumber(sv, radialr),
+                          0.1,
+                          Math.max(0.2, Math.min(10, radialR - 0.1)),
+                        );
+                        setRadialr(v);
+                        setRadialValid?.(true);
+                      }}
                       className="w-full bg-gray-800 text-white text-sm rounded-lg border border-gray-700 p-2 focus:border-green-500"
                     />
                   </div>
@@ -341,16 +390,22 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
                     <input
                       type="number"
                       step="0.1"
-                      value={radialD}
-                      onChange={(e) =>
-                        setRadialD(
-                          clamp(
-                            toNumber(e.target.value, radialD),
-                            0.1,
-                            Math.max(0.2, radialr),
-                          ),
-                        )
-                      }
+                      value={dInput}
+                      onChange={(e) => {
+                        const sv = e.target.value;
+                        setDInput(sv);
+                        if (sv.trim() === "") {
+                          setRadialValid?.(false);
+                          return;
+                        }
+                        const v = clamp(
+                          toNumber(sv, radialD),
+                          0.1,
+                          Math.max(0.2, radialr),
+                        );
+                        setRadialD(v);
+                        setRadialValid?.(true);
+                      }}
                       className="w-full bg-gray-800 text-white text-sm rounded-lg border border-gray-700 p-2 focus:border-green-500"
                     />
                   </div>
@@ -364,11 +419,18 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
                     type="number"
                     min={1}
                     max={64}
-                    value={radialRepeats}
+                    value={repeatsInput}
                     onChange={(e) => {
-                      const n = parseInt(e.target.value);
+                      const sv = e.target.value;
+                      setRepeatsInput(sv);
+                      if (sv.trim() === "") {
+                        setRadialValid?.(false);
+                        return;
+                      }
+                      const n = parseInt(sv);
                       const v = isNaN(n) ? radialRepeats : n;
                       setRadialRepeats(clamp(v, 1, 64));
+                      setRadialValid?.(true);
                     }}
                     className="w-full bg-gray-800 text-white text-sm rounded-lg border border-gray-700 p-2 focus:border-green-500"
                   />
@@ -378,16 +440,22 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
                   <input
                     type="number"
                     step="1"
-                    value={radialRepeatRotation}
-                    onChange={(e) =>
-                      setRadialRepeatRotation(
-                        clamp(
-                          toNumber(e.target.value, radialRepeatRotation),
-                          0,
-                          360,
-                        ),
-                      )
-                    }
+                    value={rotInput}
+                    onChange={(e) => {
+                      const sv = e.target.value;
+                      setRotInput(sv);
+                      if (sv.trim() === "") {
+                        setRadialValid?.(false);
+                        return;
+                      }
+                      const v = clamp(
+                        toNumber(sv, radialRepeatRotation),
+                        0,
+                        360,
+                      );
+                      setRadialRepeatRotation(v);
+                      setRadialValid?.(true);
+                    }}
                     className="w-full bg-gray-800 text-white text-sm rounded-lg border border-gray-700 p-2 focus:border-green-500"
                   />
                 </div>
@@ -396,16 +464,18 @@ const ControlPanel: React.FC<ControlPanelProps> = ({
                   <input
                     type="number"
                     step="0.05"
-                    value={radialRepeatScale}
-                    onChange={(e) =>
-                      setRadialRepeatScale(
-                        clamp(
-                          toNumber(e.target.value, radialRepeatScale),
-                          0.5,
-                          2,
-                        ),
-                      )
-                    }
+                    value={scaleInput}
+                    onChange={(e) => {
+                      const sv = e.target.value;
+                      setScaleInput(sv);
+                      if (sv.trim() === "") {
+                        setRadialValid?.(false);
+                        return;
+                      }
+                      const v = clamp(toNumber(sv, radialRepeatScale), 0.5, 2);
+                      setRadialRepeatScale(v);
+                      setRadialValid?.(true);
+                    }}
                     className="w-full bg-gray-800 text-white text-sm rounded-lg border border-gray-700 p-2 focus:border-green-500"
                   />
                 </div>
