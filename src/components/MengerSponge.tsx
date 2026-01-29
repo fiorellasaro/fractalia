@@ -15,10 +15,10 @@ const MengerSponge: React.FC<MengerSpongeProps> = React.memo(
       return (
         <mesh>
           <boxGeometry args={[size, size, size]} />
-          <meshStandardMaterial 
-            color={color} 
-            roughness={roughness} 
-            metalness={metalness} 
+          <meshStandardMaterial
+            color={color}
+            roughness={roughness}
+            metalness={metalness}
             wireframe={isWireframe}
           />
         </mesh>
@@ -26,7 +26,7 @@ const MengerSponge: React.FC<MengerSpongeProps> = React.memo(
     }
 
     const newSize = size / 3;
-    
+
     // Memoize the children generation to avoid unnecessary recalculations
     const children = useMemo(() => {
       const cubes = [];
@@ -37,7 +37,7 @@ const MengerSponge: React.FC<MengerSpongeProps> = React.memo(
             // This corresponds to excluding blocks where 2 or more coordinates are 0
             const zeros =
               (x === 0 ? 1 : 0) + (y === 0 ? 1 : 0) + (z === 0 ? 1 : 0);
-            
+
             if (zeros < 2) {
               cubes.push(
                 <group

@@ -42,14 +42,18 @@ const MaterialPanel: React.FC<MaterialPanelProps> = ({
     <div className="fixed inset-x-4 top-16 bottom-4 bg-gray-900/80 backdrop-blur-md p-4 rounded-xl border border-white/10 text-white w-auto shadow-2xl z-20 overflow-y-auto sm:absolute sm:inset-auto sm:top-4 sm:right-4 sm:bottom-auto sm:w-96 sm:overflow-visible sm:z-10">
       <div className="flex items-center gap-2 mb-4">
         <Sliders className="w-5 h-5 text-green-400" />
-        <h2 className="text-xl font-bold text-green-400">3D Render & Material</h2>
+        <h2 className="text-xl font-bold text-green-400">
+          3D Render & Material
+        </h2>
       </div>
 
       <div className="space-y-4">
         {/* Size Control */}
         <div className="space-y-2">
           <div className="flex justify-between items-center">
-            <label className="text-sm font-medium text-gray-300">Base Size</label>
+            <label className="text-sm font-medium text-gray-300">
+              Base Size
+            </label>
             <span className="text-xs bg-purple-500/20 text-purple-300 px-2 py-1 rounded">
               {size}
             </span>
@@ -68,7 +72,9 @@ const MaterialPanel: React.FC<MaterialPanelProps> = ({
         {/* Rotation Speed Control */}
         <div className="space-y-2">
           <div className="flex justify-between items-center">
-            <label className="text-sm font-medium text-gray-300">Rotation Speed</label>
+            <label className="text-sm font-medium text-gray-300">
+              Rotation Speed
+            </label>
             <span className="text-xs bg-green-500/20 text-green-300 px-2 py-1 rounded">
               {rotationSpeed.toFixed(1)}x
             </span>
@@ -86,12 +92,16 @@ const MaterialPanel: React.FC<MaterialPanelProps> = ({
 
         {/* Material Controls */}
         <div className="space-y-3 pt-3 border-t border-white/10">
-          <h3 className="text-sm font-semibold text-gray-300">Material Properties</h3>
+          <h3 className="text-sm font-semibold text-gray-300">
+            Material Properties
+          </h3>
 
           <div className="space-y-2">
             <div className="flex justify-between items-center">
               <label className="text-xs text-gray-400">Metalness</label>
-              <span className="text-xs text-gray-500">{metalness.toFixed(1)}</span>
+              <span className="text-xs text-gray-500">
+                {metalness.toFixed(1)}
+              </span>
             </div>
             <input
               type="range"
@@ -107,7 +117,9 @@ const MaterialPanel: React.FC<MaterialPanelProps> = ({
           <div className="space-y-2">
             <div className="flex justify-between items-center">
               <label className="text-xs text-gray-400">Roughness</label>
-              <span className="text-xs text-gray-500">{roughness.toFixed(1)}</span>
+              <span className="text-xs text-gray-500">
+                {roughness.toFixed(1)}
+              </span>
             </div>
             <input
               type="range"
@@ -139,7 +151,9 @@ const MaterialPanel: React.FC<MaterialPanelProps> = ({
 
         {/* Color Control */}
         <div className="space-y-2 pt-3 border-t border-white/10">
-          <label className="text-sm font-medium text-gray-300">Material Color</label>
+          <label className="text-sm font-medium text-gray-300">
+            Material Color
+          </label>
           <div className="flex gap-2 flex-wrap">
             {[
               "#ef4444", // Red
@@ -156,7 +170,9 @@ const MaterialPanel: React.FC<MaterialPanelProps> = ({
                 key={c}
                 onClick={() => setColor(c)}
                 className={`w-8 h-8 rounded-full border-2 transition-all ${
-                  color === c ? "border-white scale-110" : "border-transparent hover:scale-105"
+                  color === c
+                    ? "border-white scale-110"
+                    : "border-transparent hover:scale-105"
                 }`}
                 style={{ backgroundColor: c }}
                 aria-label={`Select color ${c}`}
@@ -176,9 +192,13 @@ const MaterialPanel: React.FC<MaterialPanelProps> = ({
 
         {/* Radial Overlay Controls */}
         <div className="space-y-2 pt-4 border-t border-white/10">
-          <h3 className="text-sm font-semibold text-gray-300">Radial Fractal Overlay</h3>
+          <h3 className="text-sm font-semibold text-gray-300">
+            Radial Fractal Overlay
+          </h3>
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-300">Radial Color</label>
+            <label className="text-sm font-medium text-gray-300">
+              Radial Color
+            </label>
             <div className="flex gap-2 flex-wrap">
               {[
                 "#ef4444",
@@ -195,7 +215,9 @@ const MaterialPanel: React.FC<MaterialPanelProps> = ({
                   key={c}
                   onClick={() => setRadialColor?.(c)}
                   className={`w-8 h-8 rounded-full border-2 transition-all ${
-                    radialColor === c ? "border-white scale-110" : "border-transparent hover:scale-105"
+                    radialColor === c
+                      ? "border-white scale-110"
+                      : "border-transparent hover:scale-105"
                   }`}
                   style={{ backgroundColor: c }}
                   aria-label={`Select radial color ${c}`}
@@ -213,7 +235,9 @@ const MaterialPanel: React.FC<MaterialPanelProps> = ({
             </div>
           </div>
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-300">Line Width</label>
+            <label className="text-sm font-medium text-gray-300">
+              Line Width
+            </label>
             <input
               type="range"
               min="0.5"

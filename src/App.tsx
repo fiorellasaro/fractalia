@@ -15,7 +15,7 @@ import type {
 
 function App() {
   const [depth, setDepth] = useState(1);
-  const [size, setSize] = useState(2);
+  const [size, setSize] = useState(1);
   const [color, setColor] = useState("#22c55e");
   const [metalness, setMetalness] = useState(0.5);
   const [roughness, setRoughness] = useState(0.3);
@@ -23,6 +23,7 @@ function App() {
   const [isWireframe, setIsWireframe] = useState(false);
   const [isInfoOpen, setIsInfoOpen] = useState(false);
   const [isDrawingOpen, setIsDrawingOpen] = useState(false);
+  const year = new Date().getFullYear();
 
   // New State for Geometry and Rules
   const [geometryType, setGeometryType] = useState<GeometryType>("cube");
@@ -284,6 +285,19 @@ function App() {
         onClose={() => setIsDrawingOpen(false)}
         onConfirm={handleDrawingConfirm}
       />
+      <footer className="fixed bottom-2 inset-x-0 z-10 flex justify-center">
+        <div className="px-3 py-1 rounded-md text-xs text-gray-400">
+          <span className="mr-2">© {year}</span>
+          <a
+            href="https://fiorellasaro.github.io/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-green-400 hover:text-green-300 underline decoration-green-500/40"
+          >
+            fiorellasaro
+          </a>
+        </div>
+      </footer>
     </div>
   );
 }
