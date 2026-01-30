@@ -29,6 +29,7 @@ interface FractalViewerProps {
   scaleFactor: number;
   customPoints?: THREE.Vector3[];
   radialRender?: React.ReactNode;
+  onCanvasReady?: (el: HTMLCanvasElement) => void;
 }
 
 const RotatingFractal: React.FC<FractalViewerProps> = ({
@@ -81,7 +82,14 @@ const FractalViewer: React.FC<FractalViewerProps> = (props) => {
     <div className="w-full h-full">
       <Canvas
         dpr={[1, 1.5]}
-        gl={{ antialias: false, powerPreference: "high-performance" }}
+        gl={{
+          antialias: false,
+          powerPreference: "high-performance",
+          preserveDrawingBuffer: true,
+        }}
+        onCreated={({ gl }) => {
+          props.onCanvasReady?.(gl.domElement as HTMLCanvasElement);
+        }}
       >
         <PerspectiveCamera makeDefault position={[0, 0, 5]} />
         <OrbitControls enableDamping />

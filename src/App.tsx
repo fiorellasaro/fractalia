@@ -6,6 +6,7 @@ import FractalInfoModal from "./components/FractalInfoModal";
 import DrawingPad from "./components/DrawingPad";
 import MaterialPanel from "./components/MaterialPanel";
 import SpiroFractal from "./components/SpiroFractal";
+import ShareStoryModal from "./components/ShareStoryModal";
 import { Settings, Sliders } from "lucide-react";
 import type {
   GeometryType,
@@ -24,6 +25,8 @@ function App() {
   const [isInfoOpen, setIsInfoOpen] = useState(false);
   const [isDrawingOpen, setIsDrawingOpen] = useState(false);
   const year = new Date().getFullYear();
+  const [isShareOpen, setIsShareOpen] = useState(false);
+  const [canvasEl, setCanvasEl] = useState<HTMLCanvasElement | null>(null);
 
   // New State for Geometry and Rules
   const [geometryType, setGeometryType] = useState<GeometryType>("cube");
@@ -117,6 +120,7 @@ function App() {
             repeatScale={radialRepeatScale}
           />
         }
+        onCanvasReady={(el) => setCanvasEl(el)}
       />
       <div className="hidden sm:block">
         <ControlPanel
@@ -272,6 +276,14 @@ function App() {
           <span className="text-xs">3D Settings</span>
         </button>
       </div>
+      <div className="fixed bottom-16 right-4 z-30">
+        <button
+          onClick={() => setIsShareOpen(true)}
+          className="flex items-center gap-2 px-3 py-2 rounded-lg border bg-gray-800 border-white/10 text-white hover:bg-gray-700"
+        >
+          <span className="text-xs">Share to Instagram Story</span>
+        </button>
+      </div>
       <FractalInfoModal
         isOpen={isInfoOpen}
         onClose={() => setIsInfoOpen(false)}
@@ -284,6 +296,11 @@ function App() {
         isOpen={isDrawingOpen}
         onClose={() => setIsDrawingOpen(false)}
         onConfirm={handleDrawingConfirm}
+      />
+      <ShareStoryModal
+        isOpen={isShareOpen}
+        onClose={() => setIsShareOpen(false)}
+        canvasEl={canvasEl}
       />
       <footer className="fixed bottom-2 inset-x-0 z-10 flex justify-center">
         <div className="px-3 py-1 rounded-md text-xs text-gray-400">
