@@ -276,12 +276,20 @@ function App() {
           <span className="text-xs">3D Settings</span>
         </button>
       </div>
-      <div className="fixed bottom-16 right-4 z-30">
+      <div className="fixed inset-x-0 bottom-16 z-30 sm:hidden flex justify-center">
         <button
           onClick={() => setIsShareOpen(true)}
-          className="flex items-center gap-2 px-3 py-2 rounded-lg border bg-gray-800 border-white/10 text-white hover:bg-gray-700"
+          className="flex items-center gap-2 px-3 py-2 rounded-lg border bg-gray-800 border-white/10 text-white hover:bg-gray-700 cursor-pointer"
         >
-          <span className="text-xs">Share to Instagram Story</span>
+          <span className="text-xs">Download</span>
+        </button>
+      </div>
+      <div className="hidden sm:flex fixed inset-x-0 bottom-12 z-30 justify-center pointer-events-none">
+        <button
+          onClick={() => setIsShareOpen(true)}
+          className="pointer-events-auto px-4 py-2 rounded-xl border bg-black/60 border-white/20 text-white backdrop-blur-md shadow-2xl hover:bg-black/70 cursor-pointer"
+        >
+          Download
         </button>
       </div>
       <FractalInfoModal

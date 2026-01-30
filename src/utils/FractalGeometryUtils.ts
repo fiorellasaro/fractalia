@@ -83,20 +83,20 @@ const getCubeVectors = () => {
   const faces = [];
 
   // Vertices (8)
-  for (let x of [-1, 1])
-    for (let y of [-1, 1])
-      for (let z of [-1, 1]) vertices.push(createVector(x, y, z));
+  for (const x of [-1, 1])
+    for (const y of [-1, 1])
+      for (const z of [-1, 1]) vertices.push(createVector(x, y, z));
 
   // Edges (12) - Midpoints
   // x-axis edges (4)
-  for (let y of [-1, 1])
-    for (let z of [-1, 1]) edges.push(createVector(0, y, z));
+  for (const y of [-1, 1])
+    for (const z of [-1, 1]) edges.push(createVector(0, y, z));
   // y-axis edges (4)
-  for (let x of [-1, 1])
-    for (let z of [-1, 1]) edges.push(createVector(x, 0, z));
+  for (const x of [-1, 1])
+    for (const z of [-1, 1]) edges.push(createVector(x, 0, z));
   // z-axis edges (4)
-  for (let x of [-1, 1])
-    for (let y of [-1, 1]) edges.push(createVector(x, y, 0));
+  for (const x of [-1, 1])
+    for (const y of [-1, 1]) edges.push(createVector(x, y, 0));
 
   // Faces (6) - Centers
   faces.push(createVector(1, 0, 0), createVector(-1, 0, 0));
@@ -167,8 +167,8 @@ const getOctahedronVectors = () => {
   // Logic: edge exists between any vertex on axis A and any vertex on axis B (A!=B)
   // Actually simpler: 12 edges are midpoints.
   // Edges are at (+-0.5, +-0.5, 0) and perms
-  for (let i of [-0.5, 0.5]) {
-    for (let j of [-0.5, 0.5]) {
+  for (const i of [-0.5, 0.5]) {
+    for (const j of [-0.5, 0.5]) {
       edges.push(createVector(i, j, 0));
       edges.push(createVector(i, 0, j));
       edges.push(createVector(0, i, j));
@@ -177,9 +177,9 @@ const getOctahedronVectors = () => {
   // Wait, midpoints of (1,0,0) and (0,1,0) is (0.5, 0.5, 0). Correct.
 
   // Faces (8) - Centroids (1/3, 1/3, 1/3) etc
-  for (let x of [-1, 1])
-    for (let y of [-1, 1])
-      for (let z of [-1, 1])
+  for (const x of [-1, 1])
+    for (const y of [-1, 1])
+      for (const z of [-1, 1])
         faces.push(createVector(x, y, z).multiplyScalar(1 / 3));
 
   return { vertices, edges, faces };

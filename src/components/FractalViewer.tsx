@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import {
   ContactShadows,
@@ -7,6 +7,7 @@ import {
   Environment,
   AdaptiveDpr,
 } from "@react-three/drei";
+import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import FractalGenerator from "./FractalGenerator";
 import type {
   GeometryType,
@@ -30,6 +31,7 @@ interface FractalViewerProps {
   customPoints?: THREE.Vector3[];
   radialRender?: React.ReactNode;
   onCanvasReady?: (el: HTMLCanvasElement) => void;
+  onBoundsComputed?: (radius: number) => void;
 }
 
 const RotatingFractal: React.FC<FractalViewerProps> = ({
@@ -46,6 +48,7 @@ const RotatingFractal: React.FC<FractalViewerProps> = ({
   scaleFactor,
   customPoints,
   radialRender,
+  onBoundsComputed,
 }) => {
   const ref = useRef<THREE.Group>(null);
 
@@ -70,6 +73,7 @@ const RotatingFractal: React.FC<FractalViewerProps> = ({
         roughness={roughness}
         isWireframe={isWireframe}
         customPoints={customPoints}
+        onBoundsComputed={onBoundsComputed}
       />
       {/* Radial 2D fractal overlay at Z=0 */}
       {radialRender}
@@ -78,6 +82,19 @@ const RotatingFractal: React.FC<FractalViewerProps> = ({
 };
 
 const FractalViewer: React.FC<FractalViewerProps> = (props) => {
+  const [boundsRadius, setBoundsRadius] = useState<number>(12);
+  const camRef = useRef<THREE.PerspectiveCamera>(null);
+  const controlsRef = useRef<OrbitControlsImpl>(null);
+
+  useEffect(() => {
+    if (camRef.current && controlsRef.current) {
+      const dist = Math.max(boundsRadius * 2, 12);
+      camRef.current.position.set(0, 0, dist);
+      controlsRef.current.target.set(0, 0, 0);
+      controlsRef.current.update();
+    }
+  }, [boundsRadius]);
+
   return (
     <div className="w-full h-full">
       <Canvas
@@ -91,8 +108,22 @@ const FractalViewer: React.FC<FractalViewerProps> = (props) => {
           props.onCanvasReady?.(gl.domElement as HTMLCanvasElement);
         }}
       >
-        <PerspectiveCamera makeDefault position={[0, 0, 5]} />
-        <OrbitControls enableDamping />
+        <PerspectiveCamera
+          makeDefault
+          ref={camRef}
+          position={[0, 0, 12]}
+          near={0.01}
+          far={10000}
+          fov={55}
+        />
+        <OrbitControls
+          ref={controlsRef}
+          enableDamping
+          enableZoom
+          zoomSpeed={0.8}
+          minDistance={0.5}
+          maxDistance={500}
+        />
         <AdaptiveDpr />
 
         <ambientLight intensity={0.5} />
@@ -105,7 +136,13 @@ const FractalViewer: React.FC<FractalViewerProps> = (props) => {
         />
         <pointLight position={[-10, -10, -10]} intensity={0.5} />
 
-        <RotatingFractal {...props} />
+        <RotatingFractal
+          {...props}
+          onBoundsComputed={(r) => {
+            setBoundsRadius(Math.max(1, r));
+            props.onBoundsComputed?.(r);
+          }}
+        />
 
         <Environment preset="city" />
         <ContactShadows

@@ -19,6 +19,7 @@ interface FractalGeneratorProps {
   roughness: number;
   isWireframe: boolean;
   customPoints?: THREE.Vector3[];
+  onBoundsComputed?: (radius: number) => void;
 }
 
 const FractalGenerator: React.FC<FractalGeneratorProps> = React.memo(
@@ -34,6 +35,7 @@ const FractalGenerator: React.FC<FractalGeneratorProps> = React.memo(
     roughness,
     isWireframe,
     customPoints,
+    onBoundsComputed,
   }) => {
     const instanceRef = useRef<THREE.InstancedMesh>(null);
 
@@ -131,6 +133,19 @@ const FractalGenerator: React.FC<FractalGeneratorProps> = React.memo(
       }
       mesh.instanceMatrix.needsUpdate = true;
     }, [transforms]);
+
+    useEffect(() => {
+      const r = transforms.reduce((max, tr) => {
+        const d =
+          tr.pos.x * tr.pos.x + tr.pos.y * tr.pos.y + tr.pos.z * tr.pos.z;
+        const dist = Math.sqrt(d) + tr.size;
+        return Math.max(max, dist);
+      }, 0);
+      const padded = r * 1.1;
+      if (padded > 0 && typeof onBoundsComputed === "function") {
+        onBoundsComputed(padded);
+      }
+    }, [transforms, onBoundsComputed]);
 
     const count = transforms.length;
 
