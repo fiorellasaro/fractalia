@@ -48,6 +48,7 @@ const ShareStoryModal: React.FC<ShareStoryModalProps> = ({
           setActiveResult(cachedVideo);
           return;
         }
+        setActiveResult(null);
         const res = await exportVideo(activeCanvas, opts);
         setCachedVideo(res);
         setActiveResult(res);
@@ -56,6 +57,7 @@ const ShareStoryModal: React.FC<ShareStoryModalProps> = ({
           setActiveResult(cachedImage);
           return;
         }
+        setActiveResult(null);
         const res = await exportImage(activeCanvas, opts);
         setCachedImage(res);
         setActiveResult(res);
@@ -85,8 +87,8 @@ const ShareStoryModal: React.FC<ShareStoryModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-40 flex items-end sm:items-center justify-center bg-black/40 p-4 sm:p-0">
-      <div className="bg-gray-900 rounded-xl border border-white/10 w-full sm:w-[420px] p-4 text-white max-h-[85vh] overflow-y-auto">
+    <div className="fixed inset-0 z-40 flex items-end sm:items-center justify-center bg-black/40 p-4 sm:p-0 backdrop-blur-sm">
+      <div className="bg-gray-900 rounded-xl border border-white/10 w-full sm:w-[420px] p-4 text-white max-h-[85vh] overflow-y-auto shadow-2xl">
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-lg font-semibold text-green-400">
             Export & Download
@@ -99,7 +101,7 @@ const ShareStoryModal: React.FC<ShareStoryModalProps> = ({
           </button>
         </div>
 
-        <div className="space-y-3">
+        <div className="space-y-4">
           <div className="grid grid-cols-2 gap-2">
             <div className="space-y-1">
               <label className="text-xs text-gray-400">Type</label>
@@ -134,10 +136,10 @@ const ShareStoryModal: React.FC<ShareStoryModalProps> = ({
                 if (!activeResult) return;
                 const a = document.createElement("a");
                 a.href = activeResult.url;
-                a.download =
-                  activeResult.type === "video"
-                    ? "fractalia-export.webm"
-                    : "fractalia-export.png";
+                const ext =
+                  activeResult.extension ||
+                  (activeResult.type === "video" ? "webm" : "png");
+                a.download = `fractalia-export.${ext}`;
                 document.body.appendChild(a);
                 a.click();
                 a.remove();
@@ -153,9 +155,11 @@ const ShareStoryModal: React.FC<ShareStoryModalProps> = ({
               <span className="text-sm">Download</span>
             </button>
             {exporting && !activeResult && (
-              <div className="flex items-center gap-2 text-xs text-gray-300">
+              <div className="flex items-center gap-2 text-xs text-gray-300 animate-pulse">
                 <Loader2 className="w-4 h-4 animate-spin" />
-                <span>Generating…</span>
+                <span>
+                  {type === "video" ? "Recording..." : "Generating..."}
+                </span>
               </div>
             )}
           </div>
@@ -177,16 +181,31 @@ const ShareStoryModal: React.FC<ShareStoryModalProps> = ({
               )}
             </div>
           ) : (
-            exporting && (
-              <div className="mt-3 flex items-center justify-center h-40 border border-white/10 rounded">
-                <Loader2 className="w-6 h-6 animate-spin text-gray-300" />
-              </div>
-            )
+            // Skeleton / Loading State
+            <div className="mt-3 relative w-full aspect-[9/16] bg-gray-800/50 rounded border border-white/5 overflow-hidden flex flex-col items-center justify-center">
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/5 to-transparent animate-shimmer" />
+              <Loader2 className="w-10 h-10 text-green-400 animate-spin mb-3 z-10" />
+              <p className="text-sm text-gray-200 font-medium z-10">
+                {type === "video" ? "Recording Video..." : "Rendering Image..."}
+              </p>
+              {type === "video" && (
+                <p className="text-xs text-gray-400 mt-1 z-10">~6 seconds</p>
+              )}
+            </div>
           )}
 
           {error && <p className="text-xs text-red-400">{error}</p>}
         </div>
       </div>
+      <style>{`
+        @keyframes shimmer {
+          0% { transform: translateY(-100%); }
+          100% { transform: translateY(100%); }
+        }
+        .animate-shimmer {
+          animation: shimmer 2s infinite linear;
+        }
+      `}</style>
     </div>
   );
 };

@@ -18,10 +18,27 @@ export interface ExportResult {
   width: number;
   height: number;
   type: ExportType;
+  mimeType: string;
+  extension: string;
 }
 
 const getTargetSize = (quality: StoryQuality) =>
   quality === "high" ? { w: 2160, h: 3840 } : { w: 1080, h: 1920 };
+
+const getSupportedVideoMimeType = () => {
+  const types = [
+    "video/mp4",
+    "video/webm;codecs=h264",
+    "video/webm;codecs=vp9",
+    "video/webm",
+  ];
+  for (const type of types) {
+    if (MediaRecorder.isTypeSupported(type)) {
+      return type;
+    }
+  }
+  return "video/webm";
+};
 
 // removed contain mode (unused)
 
@@ -97,6 +114,8 @@ export function useStoryExport() {
           width: w,
           height: h,
           type: "image",
+          mimeType: "image/png",
+          extension: "png",
         };
         setResult(res);
         return res;
@@ -122,6 +141,8 @@ export function useStoryExport() {
           }
         ).MediaRecorder;
         if (!MR) throw new Error("MediaRecorder unsupported");
+        
+        const mimeType = getSupportedVideoMimeType();
         const { w, h } = getTargetSize(opts.quality);
         const composite = document.createElement("canvas");
         composite.width = w;
@@ -129,10 +150,12 @@ export function useStoryExport() {
         const ctx = composite.getContext("2d");
         if (!ctx) throw new Error("Canvas 2D context unavailable");
         const stream = (composite as HTMLCanvasElement).captureStream(30);
+        
         const recorder = new MR(stream, {
-          mimeType: "video/webm;codecs=vp9",
+          mimeType,
           videoBitsPerSecond: 4_000_000,
         });
+        
         const chunks: BlobPart[] = [];
         recorder.ondataavailable = (e: BlobEvent) => {
           if (e.data && e.data.size > 0) chunks.push(e.data);
@@ -169,14 +192,19 @@ export function useStoryExport() {
         await new Promise<void>((resolve) => {
           recorder.onstop = () => resolve();
         });
-        const blob = new Blob(chunks, { type: "video/webm" });
+        
+        const blob = new Blob(chunks, { type: mimeType });
         const url = URL.createObjectURL(blob);
+        const ext = mimeType.includes("mp4") ? "mp4" : "webm";
+        
         const res: ExportResult = {
           blob,
           url,
           width: w,
           height: h,
           type: "video",
+          mimeType,
+          extension: ext,
         };
         setResult(res);
         return res;
@@ -194,10 +222,8 @@ export function useStoryExport() {
   const share = useCallback(async () => {
     if (!result) return { ok: false, reason: "no_result" as const };
     try {
-      const isVideo = result.type === "video";
-      const filename = isVideo ? "fractalia-story.webm" : "fractalia-story.png";
-      const mime = isVideo ? "video/webm" : "image/png";
-      const file = new File([result.blob], filename, { type: mime });
+      const filename = `fractalia-story.${result.extension}`;
+      const file = new File([result.blob], filename, { type: result.mimeType });
       type ExtendedShareData = ShareData & { files?: File[] };
       const data: ExtendedShareData = {
         files: [file],
