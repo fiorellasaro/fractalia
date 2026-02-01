@@ -276,14 +276,16 @@ function App() {
           <span className="text-xs">3D Settings</span>
         </button>
       </div>
-      <div className="fixed inset-x-0 bottom-16 z-30 sm:hidden flex justify-center">
-        <button
-          onClick={() => setIsShareOpen(true)}
-          className="flex items-center gap-2 px-3 py-2 rounded-lg border bg-gray-800 border-white/10 text-white hover:bg-gray-700 cursor-pointer"
-        >
-          <span className="text-xs">Download</span>
-        </button>
-      </div>
+      {!showControlsPanel && !showMaterialPanel && (
+        <div className="fixed inset-x-0 bottom-16 z-30 sm:hidden flex justify-center">
+          <button
+            onClick={() => setIsShareOpen(true)}
+            className="flex items-center gap-2 px-3 py-2 rounded-lg border bg-gray-800 border-white/10 text-white hover:bg-gray-700 cursor-pointer"
+          >
+            <span className="text-xs">Download</span>
+          </button>
+        </div>
+      )}
       <div className="hidden sm:flex fixed inset-x-0 bottom-12 z-30 justify-center pointer-events-none">
         <button
           onClick={() => setIsShareOpen(true)}

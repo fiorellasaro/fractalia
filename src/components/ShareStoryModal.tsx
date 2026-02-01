@@ -85,8 +85,8 @@ const ShareStoryModal: React.FC<ShareStoryModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-40 flex items-end sm:items-center justify-center bg-black/40">
-      <div className="bg-gray-900 rounded-xl border border-white/10 w-full sm:w-[420px] p-4 text-white">
+    <div className="fixed inset-0 z-40 flex items-end sm:items-center justify-center bg-black/40 p-4 sm:p-0">
+      <div className="bg-gray-900 rounded-xl border border-white/10 w-full sm:w-[420px] p-4 text-white max-h-[85vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-lg font-semibold text-green-400">
             Export & Download
